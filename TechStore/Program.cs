@@ -1,3 +1,5 @@
+using TechStore.Admin_Forms;
+
 namespace TechStore
 {
     internal static class Program
@@ -11,7 +13,7 @@ namespace TechStore
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new LoginForm());
+            Application.Run(new OrderManagementForm());
         }
     }
 }

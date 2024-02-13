@@ -17,7 +17,7 @@ namespace TechStore
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Data Source=LAPLAS;Initial Catalog=TechStore;Integrated Security=True;User Id=sa;Password=6732158492;Encrypt=False");
+            optionsBuilder.UseSqlServer("Data Source=LAPLAS;Initial Catalog=TechStore;Integrated Security=True;User Id=techstore;Password=techstore;Encrypt=False");
         }
     }
 
