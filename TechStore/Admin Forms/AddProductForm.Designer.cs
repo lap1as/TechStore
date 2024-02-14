@@ -51,6 +51,7 @@
             btnCancel.TabIndex = 25;
             btnCancel.Text = "Cancel";
             btnCancel.UseVisualStyleBackColor = true;
+            btnCancel.Click += btnCancel_Click;
             // 
             // btnSave
             // 
@@ -60,6 +61,7 @@
             btnSave.TabIndex = 24;
             btnSave.Text = "Save";
             btnSave.UseVisualStyleBackColor = true;
+            btnSave.Click += btnSave_Click;
             // 
             // txtCategory
             // 
@@ -132,9 +134,9 @@
             lblCategory.Font = new Font("Segoe UI", 14F);
             lblCategory.Location = new Point(277, 305);
             lblCategory.Name = "lblCategory";
-            lblCategory.Size = new Size(92, 25);
+            lblCategory.Size = new Size(110, 25);
             lblCategory.TabIndex = 15;
-            lblCategory.Text = "Category:";
+            lblCategory.Text = "CategoryID:";
             // 
             // lblName
             // 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Windows.Forms;
-using TechStore.Models;
 
 namespace TechStore.Admin_Forms
 {
@@ -22,11 +21,11 @@ namespace TechStore.Admin_Forms
             string password = txtPassword.Text;
             string email = txtEmail.Text;
 
-            // Створіть SQL-запит для додавання користувача
-            string query = $"INSERT INTO Users (Username, Password, Email) VALUES ('{username}', '{password}', '{email}')";
-
             try
             {
+                // Створіть SQL-запит для додавання користувача з параметрами
+                string query = "INSERT INTO Users (Username, Password, Email) VALUES (@Username, @Password, @Email)";
+
                 // Встановіть з'єднання з базою даних
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
@@ -36,6 +35,11 @@ namespace TechStore.Admin_Forms
                     // Створіть команду для виконання SQL-запиту
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
+                        // Додайте параметри до команди
+                        command.Parameters.AddWithValue("@Username", username);
+                        command.Parameters.AddWithValue("@Password", password);
+                        command.Parameters.AddWithValue("@Email", email);
+
                         // Виконайте SQL-запит
                         int rowsAffected = command.ExecuteNonQuery();
                         if (rowsAffected > 0)

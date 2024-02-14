@@ -50,6 +50,7 @@
             passwordTextBox.Name = "passwordTextBox";
             passwordTextBox.Size = new Size(100, 23);
             passwordTextBox.TabIndex = 1;
+            passwordTextBox.UseSystemPasswordChar = true;
             // 
             // btn_login
             // 

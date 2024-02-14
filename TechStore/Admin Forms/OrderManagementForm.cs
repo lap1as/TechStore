@@ -11,7 +11,7 @@ namespace TechStore.Admin_Forms
         public OrderManagementForm()
         {
             InitializeComponent();
-            _connectionString = @"Data Source=LAPLAS;Initial Catalog=TechStore;Integrated Security=True;User Id=sa;Password=6732158492;Encrypt=False";
+            _connectionString = @"Data Source=LAPLAS;Initial Catalog=TechStore;Integrated Security=True;User Id=techstore;Password=techstore;Encrypt=False";
             LoadOrders(); // Завантаження списку замовлень при завантаженні форми
         }
 
@@ -95,31 +95,41 @@ namespace TechStore.Admin_Forms
             {
                 // Отримання ID вибраного замовлення з тексту в ListBox
                 string selectedOrderIDText = listBoxOrders.SelectedItem.ToString();
-                int index = selectedOrderIDText.IndexOf("Order ID:") + "Order ID:".Length;
+                int index = selectedOrderIDText.IndexOf("Order ID:");
+                if (index != -1)
+                {
+                    index += "Order ID:".Length;
+                }
                 int endIndex = selectedOrderIDText.IndexOf(",", index);
                 string orderIDSubstring = selectedOrderIDText.Substring(index, endIndex - index).Trim();
                 int selectedOrderID;
                 if (int.TryParse(orderIDSubstring, out selectedOrderID))
                 {
-                    // Видалення зв'язаних записів з таблиці "OrderDetails"
-                    string deleteOrderDetailsQuery = $"DELETE FROM OrderDetails WHERE OrderID = {selectedOrderID}";
+                    // Перевірка наявності зв'язаних записів деталей замовлення
+                    string checkOrderDetailsQuery = $"SELECT COUNT(*) FROM OrderDetails WHERE OrderID = {selectedOrderID}";
 
                     using (SqlConnection connection = new SqlConnection(_connectionString))
-                    using (SqlCommand command = new SqlCommand(deleteOrderDetailsQuery, connection))
+                    using (SqlCommand command = new SqlCommand(checkOrderDetailsQuery, connection))
                     {
                         try
                         {
                             connection.Open();
-                            command.ExecuteNonQuery();
+                            int orderDetailsCount = (int)command.ExecuteScalar();
+
+                            if (orderDetailsCount > 0)
+                            {
+                                MessageBox.Show("Cannot delete order because there are associated order details.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show($"Error deleting order details: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return; // Вихід з методу, якщо виникла помилка
+                            MessageBox.Show($"Error checking order details: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
                         }
                     }
 
-                    // Після видалення зв'язаних записів, видаляємо саме замовлення
+                    // Видалення самого замовлення
                     string deleteOrderQuery = $"DELETE FROM Orders WHERE OrderID = {selectedOrderID}";
 
                     using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -151,8 +161,8 @@ namespace TechStore.Admin_Forms
                 {
                     MessageBox.Show("Error parsing order ID.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-
             }
+
         }
 
         private void btnClose_Click(object sender, EventArgs e)

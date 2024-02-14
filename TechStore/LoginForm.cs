@@ -1,23 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data.SqlClient;
 using System.Windows.Forms;
 
 namespace TechStore
 {
     public partial class LoginForm : Form
     {
-        private readonly TechStoreContext _context;
+        private readonly string _connectionString;
 
         public LoginForm()
         {
             InitializeComponent();
-            _context = new TechStoreContext();
+            _connectionString = @"Data Source=LAPLAS;Initial Catalog=TechStore;Integrated Security=True;User Id=techstore;Password=techstore;Encrypt=False";
         }
 
         private void btn_login_Click(object sender, EventArgs e)
@@ -25,27 +19,57 @@ namespace TechStore
             string username = usernameTextBox.Text;
             string password = passwordTextBox.Text;
 
-            var user = _context.Users.FirstOrDefault(u => u.Username == username && u.Password == password);
+            string query = @"SELECT COUNT(*) 
+                             FROM Users 
+                             INNER JOIN UserInRoles ON Users.UserID = UserInRoles.UserID
+                             INNER JOIN UserRoles ON UserInRoles.UserRoleID = UserRoles.UserRoleID
+                             WHERE Username = @Username AND Password = @Password AND RoleName = 'Admin'";
 
-            if (user != null)
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (SqlCommand command = new SqlCommand(query, connection))
             {
-                MessageBox.Show("User Found.", "Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-            {
-                MessageBox.Show("User Doesent exist", "Not Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                command.Parameters.AddWithValue("@Username", username);
+                command.Parameters.AddWithValue("@Password", password);
+
+                try
+                {
+                    connection.Open();
+                    int count = (int)command.ExecuteScalar();
+
+                    if (count > 0)
+                    {
+                        MessageBox.Show("User Found.", "Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        this.Hide();
+                        // Відкриття головної форми для адміністратора, якщо він залогінений успішно
+                        MainForm mainPage = new MainForm();
+                        mainPage.ShowDialog();
+                        
+                    }
+                    else
+                    {
+                        MessageBox.Show("User Doesn't Exist or Doesn't Have Admin Privileges", "Not Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
+
         private void CheckDatabaseConnection()
         {
-            try
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                _context.Database.CanConnect();
-                MessageBox.Show("Підключення до бази даних успішне.", "Успіх", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Не вдалося підключитися до бази даних. Помилка: {ex.Message}", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                try
+                {
+                    connection.Open();
+                    MessageBox.Show("Connection to the database successful.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to connect to the database. Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 

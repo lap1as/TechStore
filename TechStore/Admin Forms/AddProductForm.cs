@@ -1,20 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Data.SqlClient;
-
+using System.Windows.Forms;
 
 namespace TechStore.Admin_Forms
 {
     public partial class AddProductForm : Form
     {
-        private readonly string _connectionString;
+        private string _connectionString;
+
+        public string ConnectionString
+        {
+            get { return _connectionString; }
+            set { _connectionString = value; }
+        }
 
         public AddProductForm()
         {
@@ -28,13 +26,32 @@ namespace TechStore.Admin_Forms
             // Параметри для нового товару
             string name = txtName.Text;
             string description = txtDescription.Text;
-            decimal price = decimal.Parse(txtPrice.Text);
-            int stockQuantity = int.Parse(txtQuantity.Text);
-            int categoryID = int.Parse(txtCategory.Text); // Відповідно до вашої логіки
+            decimal price = 0;
+            int stockQuantity = 0;
+            int categoryID = 0;
+
+            // Перевірка та конвертація значень
+            if (!decimal.TryParse(txtPrice.Text, out price))
+            {
+                MessageBox.Show("Invalid input for price. Please enter a valid decimal value.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (!int.TryParse(txtQuantity.Text, out stockQuantity))
+            {
+                MessageBox.Show("Invalid input for stock quantity. Please enter a valid integer value.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (!int.TryParse(txtCategory.Text, out categoryID))
+            {
+                MessageBox.Show("Invalid input for category ID. Please enter a valid integer value.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             // SQL-запит для вставки нового товару
             string query = @"INSERT INTO Products (Name, Description, Price, StockQuantity, CategoryID) 
-                         VALUES (@Name, @Description, @Price, @StockQuantity, @CategoryID)";
+                             VALUES (@Name, @Description, @Price, @StockQuantity, @CategoryID)";
 
             // Виконання SQL-запиту
             using (SqlConnection connection = new SqlConnection(_connectionString))
