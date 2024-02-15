@@ -28,13 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OrderManagementForm));
             label1 = new Label();
             txtSearch = new TextBox();
             btnSearch = new Button();
             btnAddOrder = new Button();
             btnDeleteOrder = new Button();
-            listBoxOrders = new ListBox();
             btnClose = new Button();
+            dataGridViewOrders = new DataGridView();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewOrders).BeginInit();
             SuspendLayout();
             // 
             // label1
@@ -50,16 +52,16 @@
             // 
             // txtSearch
             // 
-            txtSearch.Location = new Point(285, 67);
+            txtSearch.Location = new Point(12, 93);
             txtSearch.Name = "txtSearch";
             txtSearch.Size = new Size(169, 23);
             txtSearch.TabIndex = 1;
             // 
             // btnSearch
             // 
-            btnSearch.Location = new Point(460, 67);
+            btnSearch.Location = new Point(12, 122);
             btnSearch.Name = "btnSearch";
-            btnSearch.Size = new Size(75, 23);
+            btnSearch.Size = new Size(169, 34);
             btnSearch.TabIndex = 2;
             btnSearch.Text = "Search";
             btnSearch.UseVisualStyleBackColor = true;
@@ -67,9 +69,9 @@
             // 
             // btnAddOrder
             // 
-            btnAddOrder.Location = new Point(285, 135);
+            btnAddOrder.Location = new Point(12, 183);
             btnAddOrder.Name = "btnAddOrder";
-            btnAddOrder.Size = new Size(114, 23);
+            btnAddOrder.Size = new Size(169, 34);
             btnAddOrder.TabIndex = 3;
             btnAddOrder.Text = "Add Order";
             btnAddOrder.UseVisualStyleBackColor = true;
@@ -77,26 +79,17 @@
             // 
             // btnDeleteOrder
             // 
-            btnDeleteOrder.Location = new Point(421, 135);
+            btnDeleteOrder.Location = new Point(12, 212);
             btnDeleteOrder.Name = "btnDeleteOrder";
-            btnDeleteOrder.Size = new Size(114, 23);
+            btnDeleteOrder.Size = new Size(169, 34);
             btnDeleteOrder.TabIndex = 4;
             btnDeleteOrder.Text = "Delete Order";
             btnDeleteOrder.UseVisualStyleBackColor = true;
             btnDeleteOrder.Click += btnDeleteOrder_Click;
             // 
-            // listBoxOrders
-            // 
-            listBoxOrders.FormattingEnabled = true;
-            listBoxOrders.ItemHeight = 15;
-            listBoxOrders.Location = new Point(157, 164);
-            listBoxOrders.Name = "listBoxOrders";
-            listBoxOrders.Size = new Size(517, 244);
-            listBoxOrders.TabIndex = 5;
-            // 
             // btnClose
             // 
-            btnClose.Location = new Point(379, 414);
+            btnClose.Location = new Point(64, 270);
             btnClose.Name = "btnClose";
             btnClose.Size = new Size(75, 23);
             btnClose.TabIndex = 6;
@@ -104,20 +97,32 @@
             btnClose.UseVisualStyleBackColor = true;
             btnClose.Click += btnClose_Click;
             // 
+            // dataGridViewOrders
+            // 
+            dataGridViewOrders.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewOrders.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            dataGridViewOrders.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewOrders.Location = new Point(216, 93);
+            dataGridViewOrders.Name = "dataGridViewOrders";
+            dataGridViewOrders.Size = new Size(572, 345);
+            dataGridViewOrders.TabIndex = 7;
+            // 
             // OrderManagementForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(dataGridViewOrders);
             Controls.Add(btnClose);
-            Controls.Add(listBoxOrders);
             Controls.Add(btnDeleteOrder);
             Controls.Add(btnAddOrder);
             Controls.Add(btnSearch);
             Controls.Add(txtSearch);
             Controls.Add(label1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "OrderManagementForm";
             Text = "OrderManagementForm";
+            ((System.ComponentModel.ISupportInitialize)dataGridViewOrders).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -129,7 +134,7 @@
         private Button btnSearch;
         private Button btnAddOrder;
         private Button btnDeleteOrder;
-        private ListBox listBoxOrders;
         private Button btnClose;
+        private DataGridView dataGridViewOrders;
     }
 }

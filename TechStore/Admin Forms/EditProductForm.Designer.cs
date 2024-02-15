@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditProductForm));
             label1 = new Label();
             lblNameEdit = new Label();
             lblDescriptionEdit = new Label();
@@ -176,6 +177,7 @@
             Controls.Add(lblDescriptionEdit);
             Controls.Add(lblNameEdit);
             Controls.Add(label1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "EditProductForm";
             Text = "EditProductForm";
             ResumeLayout(false);

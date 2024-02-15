@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddProductForm));
             btnCancel = new Button();
             btnSave = new Button();
             txtCategory = new TextBox();
@@ -177,6 +178,7 @@
             Controls.Add(lblCategory);
             Controls.Add(lblName);
             Controls.Add(label1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "AddProductForm";
             Text = "AddProductForm";
             ResumeLayout(false);

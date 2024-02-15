@@ -4,6 +4,7 @@ using System.Linq;
 using TechStore.Models;
 using TechStore;
 using Microsoft.Data.SqlClient;
+using System.Data;
 
 public class DatabaseService
 {
@@ -118,6 +119,33 @@ public class DatabaseService
         {
             Console.WriteLine($"Error executing query: {ex.Message}");
         }
+    }
+    public int ExecuteNonQuery(string query)
+    {
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        using (SqlCommand command = new SqlCommand(query, connection))
+        {
+            connection.Open();
+            return command.ExecuteNonQuery();
+        }
+    }
+
+    public object ExecuteScalar(string query)
+    {
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        using (SqlCommand command = new SqlCommand(query, connection))
+        {
+            connection.Open();
+            return command.ExecuteScalar();
+        }
+    }
+
+    public SqlDataReader ExecuteReader(string query)
+    {
+        SqlConnection connection = new SqlConnection(connectionString);
+        connection.Open();
+        SqlCommand command = new SqlCommand(query, connection);
+        return command.ExecuteReader(CommandBehavior.CloseConnection);
     }
 
     // Інші методи для додавання, редагування та видалення даних можуть бути додані згідно з потребами вашого додатку

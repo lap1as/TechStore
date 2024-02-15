@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CategoryManagementForm));
             dataGridViewCategories = new DataGridView();
             btnDeleteCategory = new Button();
             btnAddCategory = new Button();
@@ -124,6 +125,7 @@
             Controls.Add(btnAddCategory);
             Controls.Add(label1);
             Controls.Add(btnClose);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "CategoryManagementForm";
             Text = "CategoryManagementForm";
             ((System.ComponentModel.ISupportInitialize)dataGridViewCategories).EndInit();

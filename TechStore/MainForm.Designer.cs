@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             label1 = new Label();
             Button_CategoryManagement = new Button();
             Button_OrderManagement = new Button();
@@ -119,6 +120,7 @@
             Controls.Add(Button_OrderManagement);
             Controls.Add(Button_CategoryManagement);
             Controls.Add(label1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MainForm";
             Text = "MainForm";
             ResumeLayout(false);

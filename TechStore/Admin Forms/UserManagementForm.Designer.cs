@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserManagementForm));
             btnClose = new Button();
             btnDeleteUser = new Button();
             btnAddUser = new Button();
@@ -118,6 +119,7 @@
             Controls.Add(btnSearch);
             Controls.Add(txtSearch);
             Controls.Add(label1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "UserManagementForm";
             Text = "UserManagementForm";
             ((System.ComponentModel.ISupportInitialize)dataGridViewUsers).EndInit();
