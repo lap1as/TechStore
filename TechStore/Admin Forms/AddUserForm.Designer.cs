@@ -37,6 +37,8 @@
             txtEmail = new TextBox();
             btnSave = new Button();
             btnCancel = new Button();
+            cmbRoles = new ComboBox();
+            label5 = new Label();
             SuspendLayout();
             // 
             // label1
@@ -102,7 +104,7 @@
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(301, 290);
+            btnSave.Location = new Point(300, 363);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(75, 23);
             btnSave.TabIndex = 7;
@@ -112,7 +114,7 @@
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(410, 290);
+            btnCancel.Location = new Point(409, 363);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(75, 23);
             btnCancel.TabIndex = 8;
@@ -120,11 +122,31 @@
             btnCancel.UseVisualStyleBackColor = true;
             btnCancel.Click += btnCancel_Click;
             // 
+            // cmbRoles
+            // 
+            cmbRoles.FormattingEnabled = true;
+            cmbRoles.Location = new Point(410, 248);
+            cmbRoles.Name = "cmbRoles";
+            cmbRoles.Size = new Size(100, 23);
+            cmbRoles.TabIndex = 9;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Font = new Font("Segoe UI", 14F);
+            label5.Location = new Point(262, 251);
+            label5.Name = "label5";
+            label5.Size = new Size(95, 25);
+            label5.TabIndex = 10;
+            label5.Text = "User Role:";
+            // 
             // AddUserForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(label5);
+            Controls.Add(cmbRoles);
             Controls.Add(btnCancel);
             Controls.Add(btnSave);
             Controls.Add(txtEmail);
@@ -151,5 +173,7 @@
         private TextBox txtEmail;
         private Button btnSave;
         private Button btnCancel;
+        private ComboBox cmbRoles;
+        private Label label5;
     }
 }

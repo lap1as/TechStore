@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
 
@@ -17,40 +18,45 @@ namespace TechStore.Admin_Forms
 
         private void LoadUsers()
         {
-            string query = "SELECT UserID, Username, Email FROM Users";
+            string query = @"SELECT Users.UserID, Users.Username, Users.Email, UserRoles.RoleName
+                     FROM Users
+                     INNER JOIN UserInRoles ON Users.UserID = UserInRoles.UserID
+                     INNER JOIN UserRoles ON UserInRoles.UserRoleID = UserRoles.UserRoleID";
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             using (SqlCommand command = new SqlCommand(query, connection))
+            using (SqlDataAdapter adapter = new SqlDataAdapter(command))
             {
                 try
                 {
-                    connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
+                    DataTable dataTable = new DataTable();
+                    adapter.Fill(dataTable);
 
-                    // Очищення списку перед завантаженням нових користувачів
-                    listBoxUsers.Items.Clear();
-
-                    // Додавання користувачів до списку
-                    while (reader.Read())
-                    {
-                        listBoxUsers.Items.Add($"User ID: {reader["UserID"]}, Username: {reader["Username"]}, Email: {reader["Email"]}");
-                    }
-
-                    reader.Close();
+                    // Прив'язка даних до DataGridView
+                    dataGridViewUsers.DataSource = dataTable;
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error loading users: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Error loading data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
+
+
+
+
+
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
             // Отримання пошукового запиту з текстового поля
             string searchQuery = txtSearch.Text.Trim();
 
-            string query = $"SELECT UserID, Username, Email FROM Users WHERE Username LIKE '%{searchQuery}%'";
+            string query = $@"SELECT U.UserID, U.Username, U.Email, UR.RoleName 
+                              FROM Users U 
+                              INNER JOIN UserInRoles UR ON U.UserID = UR.UserID
+                              INNER JOIN UserRoles R ON UR.UserRoleID = R.UserRoleID
+                              WHERE U.Username LIKE '%{searchQuery}%'";
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             using (SqlCommand command = new SqlCommand(query, connection))
@@ -58,18 +64,21 @@ namespace TechStore.Admin_Forms
                 try
                 {
                     connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
+                    SqlDataAdapter adapter = new SqlDataAdapter(command);
+                    DataTable dataTable = new DataTable();
+                    adapter.Fill(dataTable);
 
-                    // Очищення списку перед завантаженням нових користувачів
-                    listBoxUsers.Items.Clear();
+                    // Прив'язка даних до DataGridView
+                    dataGridViewUsers.DataSource = dataTable;
 
-                    // Додавання відфільтрованих користувачів до списку
-                    while (reader.Read())
-                    {
-                        listBoxUsers.Items.Add($"User ID: {reader["UserID"]}, Username: {reader["Username"]}, Email: {reader["Email"]}");
-                    }
+                    // Перейменування стовпців
+                    dataGridViewUsers.Columns["UserID"].HeaderText = "User ID";
+                    dataGridViewUsers.Columns["Username"].HeaderText = "Username";
+                    dataGridViewUsers.Columns["Email"].HeaderText = "Email";
+                    dataGridViewUsers.Columns["RoleName"].HeaderText = "Role";
 
-                    reader.Close();
+                    // Автоматичне вирівнювання стовпців
+                    dataGridViewUsers.AutoResizeColumns();
                 }
                 catch (Exception ex)
                 {
@@ -91,46 +100,53 @@ namespace TechStore.Admin_Forms
         private void btnDeleteUser_Click(object sender, EventArgs e)
         {
             // Перевірка, чи вибрано користувача для видалення
-            if (listBoxUsers.SelectedItem != null)
+            if (dataGridViewUsers.SelectedRows.Count > 0)
             {
-                // Отримання ID вибраного користувача з тексту в ListBox
-                string selectedUserIDText = listBoxUsers.SelectedItem.ToString();
-                int index = selectedUserIDText.IndexOf("User ID:") + "User ID:".Length;
-                int endIndex = selectedUserIDText.IndexOf(",", index);
-                string userIDSubstring = selectedUserIDText.Substring(index, endIndex - index).Trim();
-                int selectedUserID;
-                if (int.TryParse(userIDSubstring, out selectedUserID))
+                // Отримання ID вибраного користувача з DataGridView
+                int selectedUserID = (int)dataGridViewUsers.SelectedRows[0].Cells["UserID"].Value;
+
+                // Видалення запису про користувача з таблиці UserInRoles
+                string deleteUserRoleQuery = $"DELETE FROM UserInRoles WHERE UserID = {selectedUserID}";
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                using (SqlCommand command = new SqlCommand(deleteUserRoleQuery, connection))
                 {
-                    string deleteQuery = $"DELETE FROM Users WHERE UserID = {selectedUserID}";
-
-                    using (SqlConnection connection = new SqlConnection(_connectionString))
-                    using (SqlCommand command = new SqlCommand(deleteQuery, connection))
+                    try
                     {
-                        try
-                        {
-                            connection.Open();
-                            int rowsAffected = command.ExecuteNonQuery();
-                            if (rowsAffected > 0)
-                            {
-                                MessageBox.Show("User deleted successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                                // Після видалення користувача оновлюємо список
-                                LoadUsers();
-                            }
-                            else
-                            {
-                                MessageBox.Show("Failed to delete user.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show($"Error deleting user: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
+                        connection.Open();
+                        command.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error deleting user roles: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
                     }
                 }
-                else
+
+                // Видалення користувача з таблиці Users
+                string deleteUserQuery = $"DELETE FROM Users WHERE UserID = {selectedUserID}";
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                using (SqlCommand command = new SqlCommand(deleteUserQuery, connection))
                 {
-                    MessageBox.Show("Error parsing user ID.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    try
+                    {
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            MessageBox.Show("User deleted successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                            // Після видалення користувача оновлюємо список
+                            LoadUsers();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Failed to delete user.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error deleting user: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
             else
@@ -138,6 +154,8 @@ namespace TechStore.Admin_Forms
                 MessageBox.Show("Please select a user to delete.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+
+
 
         private void btnClose_Click(object sender, EventArgs e)
         {

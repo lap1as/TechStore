@@ -34,6 +34,7 @@
             Button_ProductManagement = new Button();
             Button_UserManagement = new Button();
             label_Statistics = new Label();
+            btnLogOut = new Button();
             SuspendLayout();
             // 
             // label1
@@ -96,11 +97,22 @@
             label_Statistics.TabIndex = 5;
             label_Statistics.Text = "Stat";
             // 
+            // btnLogOut
+            // 
+            btnLogOut.Location = new Point(355, 280);
+            btnLogOut.Name = "btnLogOut";
+            btnLogOut.Size = new Size(75, 23);
+            btnLogOut.TabIndex = 6;
+            btnLogOut.Text = "Log Out";
+            btnLogOut.UseVisualStyleBackColor = true;
+            btnLogOut.Click += btnLogOut_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(btnLogOut);
             Controls.Add(label_Statistics);
             Controls.Add(Button_UserManagement);
             Controls.Add(Button_ProductManagement);
@@ -121,5 +133,6 @@
         private Button Button_ProductManagement;
         private Button Button_UserManagement;
         private Label label_Statistics;
+        private Button btnLogOut;
     }
 }

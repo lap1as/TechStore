@@ -100,5 +100,12 @@ namespace TechStore
             UserManagementForm userManagementForm = new UserManagementForm();
             userManagementForm.ShowDialog();
         }
+        private void btnLogOut_Click(object sender, EventArgs e)
+        {
+            LoginForm loginForm = new LoginForm();
+            loginForm.Show();
+            this.Close();
+        }
+
     }
 }
